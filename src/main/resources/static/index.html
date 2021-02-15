@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+    </style>
+</head>
+    <body>
+
+        <h2>Notebooks</h2>
+
+        <table id="notebooksList">
+
+        </table>
+
+        <form action="#">
+            <input id="notebook_name" placeholder="Notebook name">
+            <input id="notebook_contents" placeholder="Notebook contents">
+            <button onclick="createNotebook()">Create notebook</button>
+        </form>
+
+        <script>
+            function deleteNotebook(notebookId) {
+                var xmltype = new XMLHttpRequest();
+                xmltype.open("DELETE", "http://localhost:8080/notebooks/delete/" + notebookId, true);
+                xmltype.send();
+
+                loadNotebooks();
+            }
+
+            function createNotebook() {
+                var notebookName = document.getElementById("notebook_name").value;
+                var notebookContents = document.getElementById("notebook_contents").value;
+
+                var xmltype = new XMLHttpRequest();
+                xmltype.open("POST", "http://localhost:8080/notebooks/save");
+                xmltype.setRequestHeader("Content-Type", "application/json");
+                xmltype.send(JSON.stringify({name: notebookName, contents: notebookContents}));
+
+                loadNotebooks();
+            }
+
+            function loadNotebooks() {
+                var xmltype = new XMLHttpRequest();
+                xmltype.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200) {
+                        var notebooks = JSON.parse(this.responseText);
+                        var html = '<tr>\n' +
+                            '        <th>Notebook id</th>\n' +
+                            '        <th>Notebook name</th>\n' +
+                            '        <th>Notebook contents</th>\n' +
+                            '        <th>Delete</th>\n' +
+                            '    </tr>';
+                        for (var i = 0; i < notebooks.length; i++) {
+                            var notebook = notebooks[i];
+                            console.log(notebook);
+                            html = html + '<tr><td>' + notebook.id + '</td>\n' +
+                                '        <td>' + notebook.name + '</td>\n' +
+                                '        <td>' + notebook.contents + '</td>\n' +
+                                '        <td><button onclick="deleteNotebook(' + notebook.id + ')">Delete</button></td></tr>';
+
+                        }
+                        document.getElementById("notebooksList").innerHTML = html;
+                    }
+                };
+                xmltype.open("GET", "http://localhost:8080/notebooks/findAll", true);
+                xmltype.send();
+            }
+
+            loadNotebooks();
+        </script>
+    </body>
+</html>

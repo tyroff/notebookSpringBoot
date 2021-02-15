@@ -27,19 +27,19 @@ public class NotebookController {
         return notebookService.createNotebook(notebook);
     }
 
-    @GetMapping("/fingAll")
+    @GetMapping("/findAll")
     public List<Notebook> findAllnotebooks() {
         log.info("Handling find all notebook request");
         return notebookService.findAll();
     }
 
-    @GetMapping("findById")
+    @GetMapping("/findById")
     public Notebook findById(@RequestParam Long id) {
-        log.info("Handling find by id reguest: " + id);
+        log.info("Handling find by id request: " + id);
         return notebookService.findById(id);
     }
 
-    @GetMapping("/delete/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteNotebook(@PathVariable Long id) {
         log.info("Handling delete notebook request: " + id);
         notebookService.deleteById(id);
