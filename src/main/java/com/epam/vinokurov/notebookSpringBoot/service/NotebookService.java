@@ -20,8 +20,9 @@ public class NotebookService {
         this.notebookRepository = notebookRepository;
     }
 
-    public void createNotebook(Notebook notebook) {
+    public Notebook createNotebook(Notebook notebook) {
         notebookRepository.save(notebook);
+        return notebook;
     }
 
     public List<Notebook> findAll() {
@@ -39,7 +40,6 @@ public class NotebookService {
     public void deleteAll() {
         notebookRepository.deleteAll();
     }
-
 
     private void validateNotebook(Notebook notebook) throws ValidationException {
         if (isNull(notebook)) {
